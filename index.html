@@ -219,7 +219,7 @@
             100% { transform: translateY(-100%); }
         }
 
-        .video-frame video {
+        .video-frame iframe {
             width: 100%;
             height: 450px;
             border: none;
@@ -275,7 +275,7 @@
         }
 
         @media (max-width: 768px) {
-            .video-frame video {
+            .video-frame iframe {
                 height: 315px;
             }
             .warning-box {
@@ -308,10 +308,7 @@
         </div>
 
         <div class="video-frame">
-            <video width="100%" height="450" controls autoplay>
-                <source src="WhatsApp Video 2025-09-24 at 10.31.05.mp4" type="video/mp4">
-                Your browser does not support the video tag.
-            </video>
+            <div class="sp-embed-player" data-id="cTQZ1EnDDn4"><script src="https://go.screenpal.com/player/appearance/cTQZ1EnDDn4"></script><iframe width="100%" height="100%" style="border:0;" scrolling="no" src="https://go.screenpal.com/player/cTQZ1EnDDn4?width=100%&height=100%&ff=1&title=0&autoplay=1" allowfullscreen="true" allow="autoplay"></iframe></div>
         </div>
 
         <div class="footer-message">
@@ -337,6 +334,51 @@
             setTimeout(() => {
                 document.body.style.filter = 'none';
             }, 200);
+        });
+
+        // Immediate autoplay when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            // Force immediate autoplay
+            const forceImmediatePlay = () => {
+                const iframe = document.querySelector('.sp-embed-player iframe');
+                if (iframe) {
+                    // Try multiple autoplay methods immediately
+                    try {
+                        // Method 1: PostMessage to iframe
+                        iframe.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
+                    } catch (e) {}
+                    
+                    try {
+                        // Method 2: Reload iframe with autoplay
+                        const currentSrc = iframe.src;
+                        if (!currentSrc.includes('autostart=1')) {
+                            iframe.src = currentSrc + '&autostart=1&play=1';
+                        }
+                    } catch (e) {}
+                    
+                    try {
+                        // Method 3: Click simulation
+                        iframe.click();
+                    } catch (e) {}
+                }
+            };
+
+            // Try autoplay immediately when DOM is ready
+            forceImmediatePlay();
+            
+            // Try again after a short delay
+            setTimeout(forceImmediatePlay, 100);
+            setTimeout(forceImmediatePlay, 500);
+            setTimeout(forceImmediatePlay, 1000);
+            
+            // Also try when iframe loads
+            const iframe = document.querySelector('.sp-embed-player iframe');
+            if (iframe) {
+                iframe.addEventListener('load', () => {
+                    setTimeout(forceImmediatePlay, 100);
+                    setTimeout(forceImmediatePlay, 500);
+                });
+            }
         });
     </script>
 </body>
